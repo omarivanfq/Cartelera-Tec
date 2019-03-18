@@ -25,7 +25,7 @@
 
         <ImageView
             android:layout_gravity="center|center_horizontal|center_vertical"
-            android:id="@+id/image_libro"
+            android:id="@+id/image_event"
             android:layout_width="95dp"
             android:layout_height="95dp"
             android:src="@drawable/event_1_pic"
@@ -45,8 +45,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:padding="10dp">
         <TextView
-            android:id="@+id/textview_nombre"
-            android:text="Nombre"
+            android:id="@+id/textview_title"
+            android:text="Titulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"/>

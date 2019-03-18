@@ -5,14 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.events_tab.view.*
+import android.widget.ListView
+import kotlinx.android.synthetic.main.events_tab.*
 
 class EventsTab : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
-
+        val libros = Event.loadEvents()
+        val adapter = EventAdapter(activity, libros)
+        adapter.notifyDataSetChanged()
+        val eventsListView = rootView.findViewById<ListView>(R.id.lista_de_eventos)
+        eventsListView.adapter = adapter
         return rootView
     }
 
