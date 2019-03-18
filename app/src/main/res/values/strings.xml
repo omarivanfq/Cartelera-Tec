@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Cartelera</string>
+    <string name="tab_text_1">Eventos</string>
+    <string name="tab_text_2">Favoritos</string>
+    <string name="tab_text_3">Busqueda</string>
+    <string name="tab_text_4">Mapa</string>
+    <string name="action_settings">Ajustes</string>
+</resources>
