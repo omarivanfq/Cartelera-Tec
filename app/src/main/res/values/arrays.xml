@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="favorites">
+        <item>151</item>
+        <item>154</item>
+        <item>157</item>
+    </integer-array>
+</resources>

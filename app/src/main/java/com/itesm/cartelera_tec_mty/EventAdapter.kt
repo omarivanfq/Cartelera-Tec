@@ -56,13 +56,9 @@ class EventAdapter(private val context: Context,
             textviewLocation.text = event.location
             textviewDate.text = event.date
             textviewTime.text = event.time
-            imageview.setImageResource(event.idImage)
+            imageview.setImageResource(R.drawable.event_1_pic)
           //  containerView.setOnClickListener{_ -> listener.onCustomItemClick(libro)}
         }
-    }
-
-    companion object {
-        const val TAG_ADAPTER:String = "debug_adapter"
     }
 
     interface CustomOnItemClickListener {

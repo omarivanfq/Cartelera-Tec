@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
-import kotlinx.android.synthetic.main.events_tab.*
 
 class EventsTab : Fragment() {
 
@@ -15,7 +14,7 @@ class EventsTab : Fragment() {
         val libros = Event.loadEvents()
         val adapter = EventAdapter(activity, libros)
         adapter.notifyDataSetChanged()
-        val eventsListView = rootView.findViewById<ListView>(R.id.lista_de_eventos)
+        val eventsListView = rootView.findViewById<ListView>(R.id.events_list)
         eventsListView.adapter = adapter
         return rootView
     }
