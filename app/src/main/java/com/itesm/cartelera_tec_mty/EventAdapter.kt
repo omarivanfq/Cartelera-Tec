@@ -1,6 +1,8 @@
 package com.itesm.cartelera_tec_mty
 
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +59,10 @@ class EventAdapter(private val context: Context,
             textviewDate.text = event.date
             textviewTime.text = event.time
             imageview.setImageResource(R.drawable.event_1_pic)
-          //  containerView.setOnClickListener{_ -> listener.onCustomItemClick(libro)}
+            containerView.setOnClickListener { _ ->
+                val detailIntent = Intent(context, EventDetail::class.java)
+                startActivity(context, detailIntent, null)
+            }
         }
     }
 

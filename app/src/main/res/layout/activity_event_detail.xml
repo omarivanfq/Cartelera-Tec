@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.itesm.cartelera_tec_mty.EventDetail">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context="com.itesm.cartelera_tec_mty.EventDetail"
+            android:paddingTop="20dp"
+            android:paddingHorizontal="35dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="#000"
+                android:textSize="30sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/textview_sponsor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Evento de..."
+                android:textColor="#222"
+                android:textSize="24sp"
+                android:textStyle="normal"/>
+
+            <TextView
+                android:id="@+id/textview_creator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Creado por.. "
+                android:textColor="#222"
+                android:textSize="24sp"
+                android:textStyle="normal"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_location"
+                    android:layout_marginRight="20dp"/>
+                <TextView
+                    android:id="@+id/textview_location"
+                    android:text="Lugar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_date"
+                    android:layout_marginRight="20dp"/>
+                <TextView
+                    android:id="@+id/textview_date"
+                    android:text="Fecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_time"
+                    android:layout_marginRight="20dp"/>
+                <TextView
+                    android:id="@+id/textview_time"
+                    android:text="Tiempo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <TextView
+                android:text="Que haremos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#333"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/description"
+                android:text="Descripción"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#444"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:id="@+id/contact_title"
+                android:text="Ponte en contacto con..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#333"
+                android:textStyle="bold"
+                android:layout_marginBottom="7dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_email"
+                    android:layout_marginRight="20dp"/>
+
+                <TextView
+                    android:id="@+id/textview_email"
+                    android:text="email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_fb"
+                    android:layout_marginRight="20dp"/>
+
+                <TextView
+                    android:id="@+id/textview_fb"
+                    android:text="http://www.facebook.com/..."
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/event_1_pic"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/costo"
+                android:text="Sin costo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#444"
+                android:layout_marginBottom="15dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_favorite"
+        android:tint="#fff"/>
+
+</android.support.constraint.ConstraintLayout>
