@@ -52,7 +52,5 @@ class Event(
             return favoriteEventsList
         }
 
-
-
     }
 }
