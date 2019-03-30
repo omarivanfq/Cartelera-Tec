@@ -1,31 +1,25 @@
-Cartelera
+# Cartelera
 
 Esta aplicacion de android nos deja visualizar los eventos en el Tec de Monterrey
 
-
-Para empezar
+## Para empezar
 
 Clonar el archivo y abrirlo usando android studio
 
-
-Prerequisitos
-
-Es necesario tener android studio
-
-Desarrollado con:
-
+### Prerequisitos
 
 Android Studio
 
-Kotlin
 
-Google Maps API
+## Desarrollado con
+
+* [Android Studio](https://developer.android.com/studio)
+* [Kotlin](https://kotlinlang.org/)
+* [Google Maps API](https://developers.google.com/maps/documentation/)
 
 
-Autores
+## Autores
 
-Bruno Mendez
-
-Omar Ivan Flores
-
-Ivan Anguiano
+* **Bruno Mendez**
+* **Omar Ivan Flores**
+* **Ivan Anguiano**
