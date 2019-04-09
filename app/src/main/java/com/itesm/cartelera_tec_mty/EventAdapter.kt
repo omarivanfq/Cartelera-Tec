@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 
 class EventAdapter (val context: Context, val list:ArrayList<Event>):BaseAdapter() {
@@ -45,7 +46,8 @@ class EventAdapter (val context: Context, val list:ArrayList<Event>):BaseAdapter
         textviewLocation.text = event.location
         textviewDate.text = getDate(event.startDateTime)
         textviewTime.text = getTime(event.startDateTime) + " - " + getTime(event.endDateTime)
-        imageview.setImageResource(R.drawable.event_1_pic)
+      //  imageview.setImageResource(R.drawable.event_1_pic)
+        Picasso.get().load(event.photo).into(imageview)
         containerView.setOnClickListener { _ ->
             val detailIntent = Intent(context, EventDetail::class.java)
             startActivity(context, detailIntent, null)
