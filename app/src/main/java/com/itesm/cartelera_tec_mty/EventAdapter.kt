@@ -1,6 +1,6 @@
 package com.itesm.cartelera_tec_mty
 
-
+import TimeUtility.TimeFormat
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat.startActivity
@@ -44,29 +44,16 @@ class EventAdapter (val context: Context, val list:ArrayList<Event>):BaseAdapter
         val imageview = containerView.findViewById<ImageView>(R.id.image_event)
         textviewTitle.text = event.name //textview_nombre.text = libro.nombre
         textviewLocation.text = event.location
-        textviewDate.text = getDate(event.startDateTime)
-        textviewTime.text = getTime(event.startDateTime) + " - " + getTime(event.endDateTime)
+        textviewDate.text = TimeFormat.getDate(event.startDateTime)
+        textviewTime.text = TimeFormat.getTime(event.startDateTime) + " - " + TimeFormat.getTime(event.endDateTime)
       //  imageview.setImageResource(R.drawable.event_1_pic)
         Picasso.get().load(event.photo).into(imageview)
         containerView.setOnClickListener { _ ->
             val detailIntent = Intent(context, EventDetail::class.java)
+            detailIntent.putExtra(EventsTab.EXTRA_EVENT, event)
             startActivity(context, detailIntent, null)
         }
 
-    }
-
-    fun getDate(sdatetime:String):String {
-        val dateTimeParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss-mm:ss")
-        val dateTime = dateTimeParser.parse(sdatetime)
-        val dateFormat = SimpleDateFormat("dd MMM yyyy")
-        return dateFormat.format(dateTime)
-    }
-
-    fun getTime(sdatetime:String):String {
-        val dateTimeParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss-mm:ss")
-        val dateTime = dateTimeParser.parse(sdatetime)
-        val dateFormat = SimpleDateFormat("HH:mm")
-        return dateFormat.format(dateTime)
     }
 
 }

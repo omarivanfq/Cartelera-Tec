@@ -92,4 +92,8 @@ class EventsTab : Fragment() {
         eventsListView.adapter = adapter
     }
 
+    companion object {
+        const val EXTRA_EVENT = "extra_event"
+    }
+
 }
