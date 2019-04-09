@@ -1,6 +1,7 @@
 package com.itesm.cartelera_tec_mty
 
 import NetworkUtility.NetworkConnection
+import android.content.Context
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,8 +20,18 @@ class EventsTab : Fragment() {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
         eventsListView = rootView.findViewById<ListView>(R.id.events_list)
         loadEvents()
+      //  loadEventsFromJson()
         return rootView
     }
+
+    fun loadEventsFromJson() {
+        val jsonString: String = loadJsonFromAsset("events.json", context)
+        handleJson(jsonString)
+    }
+
+    fun loadJsonFromAsset(fileName: String, context: Context): String =
+            (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
+                    .bufferedReader().use { it.readText() }
 
     fun loadEvents() {
         if (NetworkConnection.isNetworkConnected(activity)){
@@ -36,11 +47,10 @@ class EventsTab : Fragment() {
 
     private fun handleJson(jsonString: String?) {
         val jsonArray = JSONArray(jsonString)
-        val list = ArrayList<Event>()
+        var list:MutableList<Event> = mutableListOf()
         var x = 0
         while(x < jsonArray.length()){
             val jsonObject = jsonArray.getJSONObject(x)
-
             list.add(Event(
                     jsonObject.getInt("id"),
                     jsonObject.getString("photo"),
@@ -87,6 +97,8 @@ class EventsTab : Fragment() {
                     jsonObject.getInt("applicantId")))
             x++
         }
+
+        list.sortBy { it.startDateTime }
 
         val adapter = EventAdapter(activity, list)
         eventsListView.adapter = adapter

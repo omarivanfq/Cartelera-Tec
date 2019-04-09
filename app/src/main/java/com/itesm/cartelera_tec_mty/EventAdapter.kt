@@ -14,7 +14,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 
-class EventAdapter (val context: Context, val list:ArrayList<Event>):BaseAdapter() {
+class EventAdapter (val context: Context, val list:MutableList<Event>):BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater: LayoutInflater =
