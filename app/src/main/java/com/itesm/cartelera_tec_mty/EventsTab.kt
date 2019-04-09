@@ -1,16 +1,15 @@
 package com.itesm.cartelera_tec_mty
 
-import android.os.AsyncTask
+import NetworkUtility.NetworkConnection
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.SimpleDateFormat
 
 class EventsTab : Fragment() {
 
@@ -18,34 +17,20 @@ class EventsTab : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
-      //  val libros = Event.loadEvents()
-      //  val adapter = EventAdapter(activity, libros)
-      //  adapter.notifyDataSetChanged()
         eventsListView = rootView.findViewById<ListView>(R.id.events_list)
-       // eventsListView.adapter = adapter
-
-        val url = "https://cartelerai-api.herokuapp.com/events"
-        AsyncTaskHandleJson().execute(url)
-
+        loadEvents()
         return rootView
     }
 
-    inner class AsyncTaskHandleJson : AsyncTask<String, String, String>(){
-        override fun doInBackground(vararg url: String?): String {
-            val text: String
-            val connection = URL(url[0]).openConnection() as HttpURLConnection
-            try{
-                connection.connect()
-                text = connection.inputStream.use { it.reader().use{reader -> reader.readText()}}
-            } finally {
-                connection.disconnect()
+    fun loadEvents() {
+        if (NetworkConnection.isNetworkConnected(activity)){
+            doAsync {
+                val url = NetworkConnection.buildEventsUrl()
+                val dataJson = NetworkConnection.getResponseFromHttpUrl(url)
+                uiThread {
+                    handleJson(dataJson)
+                }
             }
-            return text
-        }
-
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            handleJson(result)
         }
     }
 
@@ -55,17 +40,12 @@ class EventsTab : Fragment() {
         var x = 0
         while(x < jsonArray.length()){
             val jsonObject = jsonArray.getJSONObject(x)
-            //    .parse("2019-05-04T13:00:00.000-05:00")
-
-            //val stringDate = jsonObject.getString("startDatetime")
 
             list.add(Event(
                     jsonObject.getInt("id"),
                     jsonObject.getString("photo"),
                     jsonObject.getString("name"),
                     jsonObject.getString("startDatetime"),
-                    //"05-05-2019",
-                    //startDateString,
                     jsonObject.getString("location"),
                     jsonObject.getInt("sponsorId"),
                     jsonObject.getBoolean("cancelled"),
@@ -75,9 +55,7 @@ class EventsTab : Fragment() {
                     jsonObject.getString("categoryName"),
                     jsonObject.getDouble("cost"),
                     jsonObject.getBoolean("publicEvent"),
-                   // jsonObject.getString("endDateTime"),
                     jsonObject.getString("endDatetime"),
-                   // endDateString,
                     jsonObject.getString("requirementsToRegister"),
                     jsonObject.getString("registrationUrl"),
                     jsonObject.getString("registrationDeadline"),
