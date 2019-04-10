@@ -21,13 +21,14 @@ class EventsTab : Fragment() {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
         eventsListView = rootView.findViewById(R.id.events_list)
         // loadEvents() // loading data from web service
-        loadEventsFromJson() // loading dummy data
-        Toast.makeText(activity, "ALV_", Toast.LENGTH_LONG).show()
+       // loadEventsFromJson() // loading dummy data
+        val adapter = EventAdapter(activity, MainActivity.events)
+        eventsListView.adapter = adapter
 
         return rootView
     }
 
-
+/*
     fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
@@ -113,7 +114,7 @@ class EventsTab : Fragment() {
         eventsListView.adapter = adapter
 
     }
-
+*/
     companion object {
         const val EXTRA_EVENT = "extra_event"
     }

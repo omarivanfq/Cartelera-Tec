@@ -7,34 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.itesm.cartelera_tec_mty.MainActivity">
 
-    <Button
-        android:id="@+id/btn_save_array1"
-        android:text="save 1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_save_array2"
-        android:text="save 2"
-        app:layout_constraintLeft_toRightOf="@id/btn_save_array1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_destroy_array"
-        android:text="destroy"
-        app:layout_constraintLeft_toRightOf="@id/btn_save_array2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_show"
-        android:text="show"
-        app:layout_constraintLeft_toRightOf="@id/btn_destroy_array"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <ListView
-        app:layout_constraintTop_toBottomOf="@id/btn_destroy_array"
         android:id="@+id/favorites_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

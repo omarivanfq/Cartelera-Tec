@@ -29,6 +29,7 @@ class EventDetail : AppCompatActivity() {
             else
                 addToFavoriteDB()
         }
+
         instanceDatabase = EventDatabase.getInstance(this)
 
         doAsync {

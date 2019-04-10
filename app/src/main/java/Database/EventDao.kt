@@ -26,4 +26,7 @@ interface EventDao {
     @Query("DELETE FROM Event WHERE _id = :arg0")
     fun deleteEvent(id:Int)
 
+    @Query("SELECT _id FROM Event")
+    fun loadIds():List<Int>
+
 }
