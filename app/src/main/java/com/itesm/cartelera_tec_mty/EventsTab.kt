@@ -1,6 +1,5 @@
 package com.itesm.cartelera_tec_mty
 
-import Database.EventDatabase
 import NetworkUtility.NetworkConnection
 import android.content.Context
 import android.support.v4.app.Fragment
@@ -9,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.Toast
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -22,8 +22,11 @@ class EventsTab : Fragment() {
         eventsListView = rootView.findViewById(R.id.events_list)
         // loadEvents() // loading data from web service
         loadEventsFromJson() // loading dummy data
+        Toast.makeText(activity, "ALV_", Toast.LENGTH_LONG).show()
+
         return rootView
     }
+
 
     fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
