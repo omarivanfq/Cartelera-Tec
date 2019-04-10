@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
-import android.widget.Toast
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -17,33 +16,26 @@ import org.json.JSONArray
 class EventsTab : Fragment() {
 
     lateinit var eventsListView:ListView
-    lateinit var instanceDatabase:EventDatabase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
         eventsListView = rootView.findViewById(R.id.events_list)
-        instanceDatabase = EventDatabase.getInstance(activity)
-
-        /*doAsync {
-            val eventos = instanceDatabase.eventDao().loadAllEvents()
-            uiThread {
-                Toast.makeText(activity, eventos.size.toString()+ " events already in db.", Toast.LENGTH_SHORT).show()
-            }
-        }*/
-       // loadEvents()
-        loadEventsFromJson()
+        // loadEvents() // loading data from web service
+        loadEventsFromJson() // loading dummy data
         return rootView
-    }
-
-    fun loadEventsFromJson() {
-        val jsonString: String = loadJsonFromAsset("events.json", context)
-        handleJson(jsonString)
     }
 
     fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
 
+    // function that loads the events from the JSON file
+    fun loadEventsFromJson() {
+        val jsonString: String = loadJsonFromAsset("events.json", context)
+        handleJson(jsonString)
+    }
+
+    // function that loads the events from the web service
     fun loadEvents() {
         if (NetworkConnection.isNetworkConnected(activity)){
             doAsync {
@@ -56,6 +48,8 @@ class EventsTab : Fragment() {
         }
     }
 
+    // function that receives the JSON array data and converts it into a mutable list
+    // of events that is assigned to the listview adapter
     private fun handleJson(jsonString: String?) {
         val jsonArray = JSONArray(jsonString)
         val list:MutableList<Event> = mutableListOf()
@@ -109,11 +103,11 @@ class EventsTab : Fragment() {
             x++
         }
 
+        // sorting events by date
         list.sortBy { it.startDateTime }
 
         val adapter = EventAdapter(activity, list)
         eventsListView.adapter = adapter
-
 
     }
 

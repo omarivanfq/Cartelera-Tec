@@ -22,22 +22,25 @@ class EventDetail : AppCompatActivity() {
         setContentView(R.layout.activity_event_detail)
         event = intent.extras.getParcelable<Event>(EventsTab.EXTRA_EVENT)
         bind(event)
+
         fab_favorite.setOnClickListener {
             if (favorite)
                 deleteFromFavoriteDB()
             else
                 addToFavoriteDB()
         }
-
         instanceDatabase = EventDatabase.getInstance(this)
 
         doAsync {
+            // looking for the current event in the db
             val eventsCount = instanceDatabase.eventDao().eventsCount(event.id)
             uiThread {
+                // if it isn't there then the favorite button must be empty
                 if (eventsCount == 0){
                     favorite = false
                     fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite))
                 }
+                // if it is there then the favorite button must be filled
                 else {
                     favorite = true
                     fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite_filled))
@@ -46,6 +49,7 @@ class EventDetail : AppCompatActivity() {
         }
     }
 
+    // function that removes the current event from the database and updates the fab button
     fun deleteFromFavoriteDB(){
         doAsync {
             instanceDatabase.eventDao().deleteEvent(event.id)
@@ -57,6 +61,7 @@ class EventDetail : AppCompatActivity() {
         }
     }
 
+    // function that adds the current event to the database and updates the fab button
     fun addToFavoriteDB() {
         doAsync {
             instanceDatabase.eventDao().insertEvent(event)
