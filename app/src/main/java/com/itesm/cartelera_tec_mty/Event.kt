@@ -15,7 +15,7 @@ data class Event(@ColumnInfo(name = "_id") @PrimaryKey(autoGenerate = false) val
                  val cancelMessage:String, val languages: String, val prefix:String, val hasRegistration:Boolean, val petFriendly:Boolean, val majors:String,
                  val hasDeadline:Boolean, val registrationMessage:String, val tagNames:String, val maxCapacity:Int, val categoryId:Int, val registeredCount: Int,
                  val latitude:Double, val longitude:Double, val city:String, val state:String, val reviewStatus:String, val reviewComments:String, val applicantId:Int)
-    : Parcelable {
+            : Parcelable {
 
    /* companion object {
 

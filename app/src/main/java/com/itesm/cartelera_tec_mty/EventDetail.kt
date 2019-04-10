@@ -1,18 +1,71 @@
 package com.itesm.cartelera_tec_mty
 
+import Database.EventDatabase
 import TimeUtility.TimeFormat
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_event_detail.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 class EventDetail : AppCompatActivity() {
 
+    lateinit var event:Event
+    lateinit var instanceDatabase: EventDatabase
+    var favorite:Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val event = intent.extras.getParcelable<Event>(EventsTab.EXTRA_EVENT)
         setContentView(R.layout.activity_event_detail)
+        event = intent.extras.getParcelable<Event>(EventsTab.EXTRA_EVENT)
         bind(event)
+        fab_favorite.setOnClickListener {
+            if (favorite)
+                deleteFromFavoriteDB()
+            else
+                addToFavoriteDB()
+        }
+
+        instanceDatabase = EventDatabase.getInstance(this)
+
+        doAsync {
+            val eventsCount = instanceDatabase.eventDao().eventsCount(event.id)
+            uiThread {
+                if (eventsCount == 0){
+                    favorite = false
+                    fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite))
+                }
+                else {
+                    favorite = true
+                    fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite_filled))
+                }
+            }
+        }
+    }
+
+    fun deleteFromFavoriteDB(){
+        doAsync {
+            instanceDatabase.eventDao().deleteEvent(event.id)
+            uiThread {
+                Toast.makeText(this@EventDetail, "Deleted from favorites", Toast.LENGTH_SHORT).show()
+                fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite))
+                favorite = false
+            }
+        }
+    }
+
+    fun addToFavoriteDB() {
+        doAsync {
+            instanceDatabase.eventDao().insertEvent(event)
+            uiThread {
+                Toast.makeText(this@EventDetail, "Added to favorites", Toast.LENGTH_SHORT).show()
+                fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite_filled))
+                favorite = true
+            }
+        }
     }
 
     fun bind(event: Event){

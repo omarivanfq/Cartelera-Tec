@@ -188,12 +188,12 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"/>
-
         </LinearLayout>
 
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

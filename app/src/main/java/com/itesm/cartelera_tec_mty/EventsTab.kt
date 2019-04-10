@@ -1,5 +1,6 @@
 package com.itesm.cartelera_tec_mty
 
+import Database.EventDatabase
 import NetworkUtility.NetworkConnection
 import android.content.Context
 import android.support.v4.app.Fragment
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.Toast
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
@@ -15,12 +17,21 @@ import org.json.JSONArray
 class EventsTab : Fragment() {
 
     lateinit var eventsListView:ListView
+    lateinit var instanceDatabase:EventDatabase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
-        eventsListView = rootView.findViewById<ListView>(R.id.events_list)
-        loadEvents()
-      //  loadEventsFromJson()
+        eventsListView = rootView.findViewById(R.id.events_list)
+        instanceDatabase = EventDatabase.getInstance(activity)
+
+        /*doAsync {
+            val eventos = instanceDatabase.eventDao().loadAllEvents()
+            uiThread {
+                Toast.makeText(activity, eventos.size.toString()+ " events already in db.", Toast.LENGTH_SHORT).show()
+            }
+        }*/
+       // loadEvents()
+        loadEventsFromJson()
         return rootView
     }
 
@@ -47,9 +58,9 @@ class EventsTab : Fragment() {
 
     private fun handleJson(jsonString: String?) {
         val jsonArray = JSONArray(jsonString)
-        var list:MutableList<Event> = mutableListOf()
+        val list:MutableList<Event> = mutableListOf()
         var x = 0
-        while(x < jsonArray.length()){
+        while (x < jsonArray.length()){
             val jsonObject = jsonArray.getJSONObject(x)
             list.add(Event(
                     jsonObject.getInt("id"),
@@ -102,6 +113,8 @@ class EventsTab : Fragment() {
 
         val adapter = EventAdapter(activity, list)
         eventsListView.adapter = adapter
+
+
     }
 
     companion object {
