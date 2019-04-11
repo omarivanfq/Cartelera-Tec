@@ -1,15 +1,14 @@
 # Cartelera
 
-Esta aplicacion de android nos deja visualizar los eventos en el Tec de Monterrey
+Aplicacion de android que permite visualizar los eventos llevados acabo en el Tec de Monterrey campus MTY.
 
 ## Para empezar
 
-Clonar el archivo y abrirlo usando android studio
+Clonar el archivo y abrirlo usando android studio.
 
 ### Prerequisitos
 
 Android Studio
-
 
 ## Desarrollado con
 
