@@ -6,4 +6,7 @@
     <string name="tab_text_4">Mapa</string>
     <string name="action_settings">Ajustes</string>
     <string name="title_activity_maps">Map</string>
+    <string name="no_events_on_db">No hay eventos próximos.</string>
+    <string name="removed_favorite">Se quitó de favoritos.</string>
+    <string name="added_favorite">Se agregó a favoritos.</string>
 </resources>

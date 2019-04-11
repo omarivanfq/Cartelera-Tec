@@ -53,7 +53,7 @@ class EventAdapter (val context: Context, val list:MutableList<Event>):BaseAdapt
             detailIntent.putExtra(EventsTab.EXTRA_EVENT, event)
             startActivity(context, detailIntent, null)
         }
-
     }
+
 
 }

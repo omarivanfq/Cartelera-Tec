@@ -12,6 +12,8 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var listIds:List<Int>
     lateinit var instanceDatabase: EventDatabase
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +58,6 @@ class MainActivity : AppCompatActivity() {
         loadEventsFromJson() // loading dummy data
     }
 
-
-    fun getAdapter():EventAdapter {
-        return eventAdapter
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -80,7 +77,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
         override fun getItem(position: Int): Fragment {
             val eventsTab = EventsTab()
             eventsTab.adapter = eventAdapter
@@ -94,7 +90,6 @@ class MainActivity : AppCompatActivity() {
                 else -> SearchTab()
             }
         }
-
         override fun getCount(): Int {
             return 4
         }
@@ -184,6 +179,12 @@ class MainActivity : AppCompatActivity() {
         eventAdapter.notifyDataSetChanged()
         updateFavoritesListData()
         favoritesAdapter.notifyDataSetChanged()
+        if (events.isEmpty()) {
+            textview_noevents.visibility = View.VISIBLE
+        }
+        else {
+            textview_noevents.visibility = View.INVISIBLE
+        }
     }
 
     override fun onResume() {
