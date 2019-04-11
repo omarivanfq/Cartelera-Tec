@@ -10,10 +10,12 @@ class NetworkConnection {
 
     companion object {
         const val BASE_URL = "https://cartelerai-api.herokuapp.com"
-        //const val API_KEY = "b70edca46d4cf25b5b119535e904d093"
 
         fun buildEventsUrl(): URL =
                 URL("${BASE_URL}/events")
+
+        fun buildSponsorsUrl(): URL =
+                URL("${BASE_URL}/sponsors")
 
         fun getResponseFromHttpUrl(url: URL): String =
                 try {

@@ -3,7 +3,6 @@ package com.itesm.cartelera_tec_mty
 import Database.EventDatabase
 import NetworkUtility.NetworkConnection
 import android.content.Context
-import android.os.AsyncTask
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -13,24 +12,36 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ListView
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
+    lateinit var dataJson:String
+    lateinit var eventAdapter:EventAdapter
+    lateinit var favoritesAdapter:EventAdapter
 
-    //  lateinit var eventsListView: ListView
+    lateinit var events:MutableList<Event>
+    lateinit var favoriteEvents:MutableList<Event>
+
+    lateinit var listIds:List<Int>
+    lateinit var instanceDatabase: EventDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        events = mutableListOf()
+        favoriteEvents = mutableListOf()
+        eventAdapter = EventAdapter(this, events)
+        favoritesAdapter = EventAdapter(this, favoriteEvents)
+
+        instanceDatabase = EventDatabase.getInstance(this)
 
         setSupportActionBar(toolbar)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -39,9 +50,16 @@ class MainActivity : AppCompatActivity() {
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-        events = mutableListOf()
+
+//        loadEvents() // load from web service
         loadEventsFromJson() // loading dummy data
     }
+
+
+    fun getAdapter():EventAdapter {
+        return eventAdapter
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -64,9 +82,13 @@ class MainActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
+            val eventsTab = EventsTab()
+            eventsTab.adapter = eventAdapter
+            val favoritesTab = FavoritesTab()
+            favoritesTab.adapter = favoritesAdapter
             return when (position) {
-                0 -> EventsTab()
-                1 -> FavoritesTab()
+                0 -> eventsTab
+                1 -> favoritesTab
                 2 -> SearchTab()
                 3 -> MapTab()
                 else -> SearchTab()
@@ -93,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         if (NetworkConnection.isNetworkConnected(this)){
             doAsync {
                 val url = NetworkConnection.buildEventsUrl()
-                val dataJson = NetworkConnection.getResponseFromHttpUrl(url)
+                 dataJson = NetworkConnection.getResponseFromHttpUrl(url)
                 uiThread {
                     handleJson(dataJson)
                 }
@@ -157,15 +179,40 @@ class MainActivity : AppCompatActivity() {
             events.add(list.last())
             x++
         }
-        // sorting events by date
-       // list.sortBy { it.startDateTime }
+        Toast.makeText(this@MainActivity, "All events loaded", Toast.LENGTH_SHORT).show()
         events.sortBy {it.startDateTime}
-       // val adapter = EventAdapter(this, list)
-       // eventsListView.adapter = adapter
+        eventAdapter.notifyDataSetChanged()
+        updateFavoritesListData()
+        favoritesAdapter.notifyDataSetChanged()
     }
 
-    companion object {
-        lateinit var events:MutableList<Event>
+    override fun onResume() {
+        super.onResume()
+        updateFavoritesListData()
+    }
+
+    fun updateFavoritesListData(){
+        doAsync {
+            listIds = instanceDatabase.eventDao().loadIds()
+            uiThread {
+                if (NetworkConnection.isNetworkConnected(this@MainActivity)){
+                    val favEvents = events.filter { it.id in listIds }
+                    favoriteEvents.clear()
+                    favoriteEvents.addAll(favEvents)
+                    favoritesAdapter.notifyDataSetChanged()
+                }
+                else {
+                    doAsync {
+                        val favEvents = instanceDatabase.eventDao().loadAllEvents()
+                        uiThread {
+                            favoriteEvents.clear()
+                            favoriteEvents.addAll(favEvents)
+                            favoritesAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
