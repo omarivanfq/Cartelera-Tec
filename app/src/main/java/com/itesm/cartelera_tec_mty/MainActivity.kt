@@ -4,7 +4,6 @@ import Database.EventDatabase
 import NetworkUtility.NetworkConnection
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -14,7 +13,6 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.support.v7.widget.SearchView
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 
@@ -22,12 +20,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
-import android.support.v4.view.MenuItemCompat
-
-
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     lateinit var dataJson:String
@@ -40,11 +36,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var listIds:List<Int>
     lateinit var instanceDatabase: EventDatabase
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        unfilteredEvents = mutableListOf()
         events = mutableListOf()
         favoriteEvents = mutableListOf()
         eventAdapter = EventAdapter(this, events)
@@ -62,76 +58,61 @@ class MainActivity : AppCompatActivity() {
 
 //        loadEvents() // load from web service
         loadEventsFromJson() // loading dummy data
-        handleIntent()
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-       // setIntent(intent)
-        handleIntent()
-    }
-
-    private fun handleIntent(){
-        if (Intent.ACTION_SEARCH == intent.action) {
-            Toast.makeText(this, "okkkk", Toast.LENGTH_LONG).show()
-            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                val newEvents:MutableList<Event> = mutableListOf()
-                newEvents.addAll(doMySearch(query).toMutableList())
-                events.clear()
-                events.addAll(newEvents)
-                eventAdapter.notifyDataSetChanged()
-            }
-
-        }
-    }
-
-    fun doMySearch(query:String) = events.filter { event -> event.name.contains(query,true) }
+    fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
-        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
         searchView = menu.findItem(R.id.item_search).actionView as SearchView
 
         // assigns a hint into SearchView query text
         searchView?.queryHint = getString(R.string.search_hint)
 
-        // searchableInfo object represents the searchable configuration
-        searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-
         // TODO 9: Para detectar que se presiona el botón de back del toolbar
-        searchView?.setOnQueryTextFocusChangeListener { _, queryTextFocused ->
-            if (!queryTextFocused) {
-                searchView?.isIconified = true
+        searchView?.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(view: View, queryTextFocused: Boolean) {
+                if (!queryTextFocused) {
+                    searchView?.setIconified(true)
+                }
             }
-        }
+        })
 
         // TODO 8: Actualizar lista con todos los elementos al cerrar el SearchView
         searchView?.setOnCloseListener(object : SearchView.OnCloseListener {
             override fun onClose(): Boolean {
+                events.clear()
+                events.addAll(unfilteredEvents)
+                eventAdapter.notifyDataSetChanged()
                 searchView?.onActionViewCollapsed()
                 supportInvalidateOptionsMenu()
-                /*      events = Nino.populateData(applicationContext)
-                      adapter?.updateData(displayListNinos)*/
+                return true
+            }
+        })
+
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                Toast.makeText(this@MainActivity, query, Toast.LENGTH_SHORT).show()
+                val newEvents:MutableList<Event> = mutableListOf()
+                newEvents.addAll(doMySearch(query).toMutableList())
+                events.clear()
+                events.addAll(newEvents)
+                eventAdapter.notifyDataSetChanged()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
         })
 
+        searchView?.visibility = View.INVISIBLE
+
         return super.onCreateOptionsMenu(menu)
     }
-/*
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        if (id == R.id.action_settings) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
-    */
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+
         override fun getItem(position: Int): Fragment {
             val eventsTab = EventsTab()
             eventsTab.adapter = eventAdapter
@@ -229,6 +210,7 @@ class MainActivity : AppCompatActivity() {
         }
         Toast.makeText(this@MainActivity, "All events loaded", Toast.LENGTH_SHORT).show()
         events.sortBy {it.startDateTime}
+        unfilteredEvents.addAll(events)
         eventAdapter.notifyDataSetChanged()
         updateFavoritesListData()
         favoritesAdapter.notifyDataSetChanged()
@@ -243,7 +225,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         updateFavoritesListData()
     }
-    fun updateFavoritesListData(){
+    private fun updateFavoritesListData(){
         doAsync {
             listIds = instanceDatabase.eventDao().loadIds()
             uiThread {

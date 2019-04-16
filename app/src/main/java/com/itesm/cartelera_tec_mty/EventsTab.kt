@@ -1,12 +1,17 @@
 package com.itesm.cartelera_tec_mty
 
+import android.app.SearchManager
+import android.content.Intent
 import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.ListView
 
 class EventsTab : Fragment() {
 
+    private var searchView: SearchView? = null
     lateinit var eventsListView:ListView
     lateinit var adapter:EventAdapter
 
@@ -19,10 +24,6 @@ class EventsTab : Fragment() {
 
     companion object {
         const val EXTRA_EVENT = "extra_event"
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
 }
