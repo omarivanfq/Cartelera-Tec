@@ -2,9 +2,7 @@ package com.itesm.cartelera_tec_mty
 
 import android.support.v4.app.Fragment
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ListView
 
 class EventsTab : Fragment() {
@@ -21,6 +19,10 @@ class EventsTab : Fragment() {
 
     companion object {
         const val EXTRA_EVENT = "extra_event"
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
 }

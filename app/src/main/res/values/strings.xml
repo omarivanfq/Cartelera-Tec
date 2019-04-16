@@ -9,4 +9,6 @@
     <string name="no_events_on_db">No hay eventos próximos.</string>
     <string name="removed_favorite">Se quitó de favoritos.</string>
     <string name="added_favorite">Se agregó a favoritos.</string>
+    <string name="search_view">Enter search</string>
+    <string name="search_hint">Search Eventos</string>
 </resources>
