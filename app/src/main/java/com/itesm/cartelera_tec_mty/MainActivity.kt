@@ -2,7 +2,6 @@ package com.itesm.cartelera_tec_mty
 
 import Database.EventDatabase
 import NetworkUtility.NetworkConnection
-import android.app.SearchManager
 import android.content.Context
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.support.v4.view.ViewPager
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.View
@@ -23,6 +23,7 @@ import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var optionsMenu:Menu
     lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
@@ -45,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         favoriteEvents = mutableListOf()
         eventAdapter = EventAdapter(this, events)
         favoritesAdapter = EventAdapter(this, favoriteEvents)
-
         instanceDatabase = EventDatabase.getInstance(this)
 
         setSupportActionBar(toolbar)
@@ -54,15 +54,35 @@ class MainActivity : AppCompatActivity() {
         container.adapter = mSectionsPagerAdapter
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+           //     Toast.makeText(this@MainActivity, "onPageScrollStateChanged", Toast.LENGTH_SHORT).show()
+            }
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+         //       Toast.makeText(this@MainActivity, "onPageScrolled", Toast.LENGTH_SHORT).show()
+            }
+            override fun onPageSelected(position: Int) {
+                optionsMenu.findItem(R.id.item_search).isVisible = position == 0
+                Toast.makeText(this@MainActivity, "onPageSelected $position", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
 //        loadEvents() // load from web service
         loadEventsFromJson() // loading dummy data
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        Toast.makeText(this, "onPrepareOptionsMenu", Toast.LENGTH_SHORT).show()
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        optionsMenu = menu
         menuInflater.inflate(R.menu.menu_search, menu)
         searchView = menu.findItem(R.id.item_search).actionView as SearchView
 
@@ -100,13 +120,10 @@ class MainActivity : AppCompatActivity() {
                 eventAdapter.notifyDataSetChanged()
                 return true
             }
-
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
         })
-
-        searchView?.visibility = View.INVISIBLE
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -129,6 +146,9 @@ class MainActivity : AppCompatActivity() {
         override fun getCount(): Int {
             return 4
         }
+
+
+
     }
     fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
