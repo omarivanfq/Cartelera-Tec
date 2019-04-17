@@ -55,17 +55,11 @@ class MainActivity : AppCompatActivity() {
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-           //     Toast.makeText(this@MainActivity, "onPageScrollStateChanged", Toast.LENGTH_SHORT).show()
-            }
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-         //       Toast.makeText(this@MainActivity, "onPageScrolled", Toast.LENGTH_SHORT).show()
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 optionsMenu.findItem(R.id.item_search).isVisible = position == 0
-                Toast.makeText(this@MainActivity, "onPageSelected $position", Toast.LENGTH_SHORT).show()
             }
-
         })
 
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
@@ -138,16 +132,14 @@ class MainActivity : AppCompatActivity() {
             return when (position) {
                 0 -> eventsTab
                 1 -> favoritesTab
-                2 -> SearchTab()
-                3 -> MapTab()
+             //   2 -> SearchTab()
+                2 -> MapTab()
                 else -> SearchTab()
             }
         }
         override fun getCount(): Int {
-            return 4
+            return 3
         }
-
-
 
     }
     fun loadJsonFromAsset(fileName: String, context: Context): String =
