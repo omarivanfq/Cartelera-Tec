@@ -23,6 +23,7 @@ import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 
+    var opened:Boolean = true
     lateinit var optionsMenu:Menu
     lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
@@ -63,14 +64,19 @@ class MainActivity : AppCompatActivity() {
         })
 
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-
+/*
+        show_date_picker.setOnClickListener {
+            if (opened) {
+                layout_ok.removeView(layout_date_range)
+            }
+            else {
+                layout_ok.addView(layout_date_range)
+            }
+            opened = !opened
+        }
+        */
 //        loadEvents() // load from web service
         loadEventsFromJson() // loading dummy data
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        Toast.makeText(this, "onPrepareOptionsMenu", Toast.LENGTH_SHORT).show()
-        return super.onPrepareOptionsMenu(menu)
     }
 
     fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
@@ -83,26 +89,20 @@ class MainActivity : AppCompatActivity() {
         // assigns a hint into SearchView query text
         searchView?.queryHint = getString(R.string.search_hint)
 
-        // TODO 9: Para detectar que se presiona el botón de back del toolbar
-        searchView?.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener {
-            override fun onFocusChange(view: View, queryTextFocused: Boolean) {
-                if (!queryTextFocused) {
-                    searchView?.setIconified(true)
-                }
+        searchView?.setOnQueryTextFocusChangeListener { _, queryTextFocused ->
+            if (!queryTextFocused) {
+                searchView?.isIconified = true
             }
-        })
+        }
 
-        // TODO 8: Actualizar lista con todos los elementos al cerrar el SearchView
-        searchView?.setOnCloseListener(object : SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                events.clear()
-                events.addAll(unfilteredEvents)
-                eventAdapter.notifyDataSetChanged()
-                searchView?.onActionViewCollapsed()
-                supportInvalidateOptionsMenu()
-                return true
-            }
-        })
+        searchView?.setOnCloseListener {
+            events.clear()
+            events.addAll(unfilteredEvents)
+            eventAdapter.notifyDataSetChanged()
+            searchView?.onActionViewCollapsed()
+            supportInvalidateOptionsMenu()
+            true
+        }
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -142,11 +142,12 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    fun loadJsonFromAsset(fileName: String, context: Context): String =
+    private fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
+
     // function that loads the events from the JSON file
-    fun loadEventsFromJson() {
+    private fun loadEventsFromJson() {
         if (NetworkConnection.isNetworkConnected(this)) {
             val jsonString: String = loadJsonFromAsset("events.json", this)
             handleJson(jsonString)
