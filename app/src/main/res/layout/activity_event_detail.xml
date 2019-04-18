@@ -30,7 +30,7 @@
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/textview_sponsor"
+                android:id="@+id/textview_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Evento de..."
@@ -39,7 +39,7 @@
                 android:textStyle="normal"/>
 
             <TextView
-                android:id="@+id/textview_creator"
+                android:id="@+id/textview_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Creado por.. "

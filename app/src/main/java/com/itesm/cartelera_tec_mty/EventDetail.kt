@@ -75,7 +75,8 @@ class EventDetail : AppCompatActivity() {
 
     fun bind(event: Event){
         textview_title.text = event.name
-        textview_sponsor.text = "Evento de " + event.sponsorId
+        textview_category.text = "Evento de ${event.categoryName}"
+        textview_contact.text = "Creado por ${event.contactName}"
         textview_location.text = event.location
         textview_date.text = TimeFormat.getDate(event.startDateTime)
         textview_time.text = TimeFormat.getTime(event.startDateTime) + " - " + TimeFormat.getTime(event.endDateTime)
