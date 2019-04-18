@@ -43,7 +43,7 @@ class Filters : Fragment() {
         containerDate.removeView(layoutDate)
 
         textviewDate.setOnClickListener {
-            if (dateFilterOpened) {
+            if (dateFilterOpened) { // containerDate == layoutDate.parent
                 containerDate.removeView(layoutDate)
             }
             else {
@@ -86,7 +86,7 @@ class Filters : Fragment() {
         adapterMonths.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerMonths.adapter = adapterMonths
        // spinnerMonths.isEnabled = false
-       spinnerMonths.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinnerMonths.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
            override fun onNothingSelected(parent: AdapterView<*>?) { }
            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                if (position == 0){
@@ -112,6 +112,7 @@ class Filters : Fragment() {
                }
            }
        }
+        spinnerMonths.isEnabled = false
     }
 
     private fun setDaysSpinner(view:View) {

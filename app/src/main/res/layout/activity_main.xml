@@ -77,7 +77,8 @@
         android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingTop="20dp">
+        android:paddingTop="20dp"
+        android:layout_gravity="start">
         <LinearLayout
             android:id="@+id/layout_ok"
             android:layout_width="wrap_content"

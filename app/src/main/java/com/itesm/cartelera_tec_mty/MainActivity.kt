@@ -64,19 +64,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-/*
-        show_date_picker.setOnClickListener {
-            if (opened) {
-                layout_ok.removeView(layout_date_range)
-            }
-            else {
-                layout_ok.addView(layout_date_range)
-            }
-            opened = !opened
-        }
-        */
-//        loadEvents() // load from web service
-        loadEventsFromJson() // loading dummy data
+        loadEvents() // load from web service
+        //loadEventsFromJson() // loading dummy data
     }
 
     fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
