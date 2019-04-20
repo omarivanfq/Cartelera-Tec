@@ -12,7 +12,6 @@ abstract class EventDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
 
     companion object {
-
         private val DATABASE_NAME = "EventDB.db"
         private var dbInstance: EventDatabase? = null
 

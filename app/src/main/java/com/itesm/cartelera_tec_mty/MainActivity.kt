@@ -2,6 +2,7 @@ package com.itesm.cartelera_tec_mty
 
 import Database.EventDatabase
 import NetworkUtility.NetworkConnection
+import TimeUtility.TimeFormat
 import android.content.Context
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
@@ -12,18 +13,17 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.SearchView
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Filters.FilteringListener {
 
-    var opened:Boolean = true
     lateinit var optionsMenu:Menu
     lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         unfilteredEvents = mutableListOf()
         events = mutableListOf()
@@ -64,8 +65,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-        loadEvents() // load from web service
-        //loadEventsFromJson() // loading dummy data
+
+//        loadEvents() // load from web service
+        loadEventsFromJson() // loading dummy data
     }
 
     fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
@@ -95,7 +97,6 @@ class MainActivity : AppCompatActivity() {
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                Toast.makeText(this@MainActivity, query, Toast.LENGTH_SHORT).show()
                 val newEvents:MutableList<Event> = mutableListOf()
                 newEvents.addAll(doMySearch(query).toMutableList())
                 events.clear()
@@ -131,12 +132,12 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    private fun loadJsonFromAsset(fileName: String, context: Context): String =
+    fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
 
     // function that loads the events from the JSON file
-    private fun loadEventsFromJson() {
+    fun loadEventsFromJson() {
         if (NetworkConnection.isNetworkConnected(this)) {
             val jsonString: String = loadJsonFromAsset("events.json", this)
             handleJson(jsonString)
@@ -206,11 +207,10 @@ class MainActivity : AppCompatActivity() {
                     jsonObject.getString("reviewStatus"),
                     jsonObject.getString("reviewComments"),
                     jsonObject.getInt("applicantId")))
-
             events.add(list.last())
             x++
         }
-        Toast.makeText(this@MainActivity, "All events loaded", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this@MainActivity, "All events loaded", Toast.LENGTH_SHORT).show()
         events.sortBy {it.startDateTime}
         unfilteredEvents.addAll(events)
         eventAdapter.notifyDataSetChanged()
@@ -250,4 +250,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun filter(categoryId: Int?, year:Int?, month:Int?, day:Int?) {
+        events.clear()
+        if (categoryId == null){
+            events.addAll(unfilteredEvents)
+        }
+        else {
+            unfilteredEvents.map {
+                if (it.categoryId == categoryId) {
+                    events.add(it)
+                }
+            }
+        }
+        if (year != null) {
+            val yearFilteredEvents = events.filter { TimeFormat.getNumericalYear(it.startDateTime) == year }
+            events.clear()
+            events.addAll(yearFilteredEvents)
+            if (month != null) {
+                val monthFilteredEvents = events.filter { TimeFormat.getNumericalMonth(it.startDateTime) == month }
+                events.clear()
+                events.addAll(monthFilteredEvents)
+                if (day != null) {
+                    val dayFilteredEvents = events.filter { TimeFormat.getNumericalDay(it.startDateTime) == day }
+                    events.clear()
+                    events.addAll(dayFilteredEvents)
+                }
+            }
+        }
+
+        eventAdapter.notifyDataSetChanged()
+        drawer_layout.closeDrawer(Gravity.START)
+    }
+
+    override fun reset() {
+        events.clear()
+        events.addAll(unfilteredEvents)
+        eventAdapter.notifyDataSetChanged()
+        drawer_layout.closeDrawer(Gravity.START)
+    }
+
 }

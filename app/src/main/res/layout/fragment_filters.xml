@@ -1,52 +1,100 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.itesm.cartelera_tec_mty.Filters">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="15dp">
         <TextView
-            android:id="@+id/textview_date"
-            android:layout_width="wrap_content"
+            android:text="@string/filters_title"
+            android:textColor="#000"
+            android:textSize="23sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/textview_category"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/filter_date"/>
-
+            android:text="@string/filter_category"
+            android:layout_marginVertical="3dp"
+            style="@style/filter_header"/>
+        <LinearLayout
+            android:id="@+id/container_category_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/layout_category_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="4dp"
+                android:layout_marginHorizontal="15dp">
+                <Spinner
+                    android:id="@+id/spinner_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="7dp"
+                    style="@style/filter_spinner" />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/textview_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_date"
+            android:layout_marginTop="5dp"
+            style="@style/filter_header"/>
         <LinearLayout
             android:id="@+id/container_date_filter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/layout_date_filter"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="4dp">
+                android:paddingTop="4dp"
+                android:layout_marginHorizontal="15dp">
                 <Spinner
                     android:id="@+id/spinner_years"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="7dp"/>
+                    android:layout_marginVertical="7dp"
+                    style="@style/filter_spinner"/>
                 <Spinner
                     android:id="@+id/spinner_months"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="7dp"/>
+                    android:layout_marginVertical="7dp"
+                    style="@style/filter_spinner"/>
                 <Spinner
                     android:id="@+id/spinner_days"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="7dp"/>
-                <Button
-                    android:id="@+id/btn_filter_done"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Listo"/>
+                    android:layout_marginVertical="7dp"
+                    style="@style/filter_spinner"/>
             </LinearLayout>
         </LinearLayout>
-
+        <Button
+            android:id="@+id/btn_filters_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccentTransparent"
+            android:text="@string/filters_apply"
+            android:layout_marginTop="10dp"/>
+        <Button
+            android:id="@+id/btn_remove_filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDarkTransparent"
+            android:text="@string/filters_remove"
+            android:textColor="#fff"
+            android:layout_marginVertical="10dp"/>
     </LinearLayout>
 </FrameLayout>

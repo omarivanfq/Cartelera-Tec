@@ -19,6 +19,9 @@ class NetworkConnection {
         fun buildSponsorsUrl(): URL =
                 URL("$BASE_URL/sponsors")
 
+        fun buildCategoriesUrl(): URL =
+                URL("$BASE_URL/categories")
+
         fun getResponseFromHttpUrl(url: URL): String {
             try {
                 val connection = url.openConnection() as HttpURLConnection
