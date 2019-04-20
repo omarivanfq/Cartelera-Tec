@@ -20,7 +20,7 @@ class EventDetail : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_detail)
-        event = intent.extras.getParcelable<Event>(EventsTab.EXTRA_EVENT)
+        event = intent.extras.getParcelable(EventsTab.EXTRA_EVENT)
         bind(event)
 
         fab_favorite.setOnClickListener {
@@ -29,6 +29,7 @@ class EventDetail : AppCompatActivity() {
             else
                 addToFavoriteDB()
         }
+
         instanceDatabase = EventDatabase.getInstance(this)
 
         doAsync {
@@ -54,7 +55,7 @@ class EventDetail : AppCompatActivity() {
         doAsync {
             instanceDatabase.eventDao().deleteEvent(event.id)
             uiThread {
-                Toast.makeText(this@EventDetail, "Deleted from favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@EventDetail, getString(R.string.removed_favorite), Toast.LENGTH_SHORT).show()
                 fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite))
                 favorite = false
             }
@@ -66,7 +67,7 @@ class EventDetail : AppCompatActivity() {
         doAsync {
             instanceDatabase.eventDao().insertEvent(event)
             uiThread {
-                Toast.makeText(this@EventDetail, "Added to favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@EventDetail, getString(R.string.added_favorite), Toast.LENGTH_SHORT).show()
                 fab_favorite.setImageDrawable(ContextCompat.getDrawable(this@EventDetail, R.drawable.ic_favorite_filled))
                 favorite = true
             }

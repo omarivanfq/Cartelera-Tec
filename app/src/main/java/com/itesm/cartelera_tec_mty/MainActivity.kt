@@ -2,6 +2,7 @@ package com.itesm.cartelera_tec_mty
 
 import Database.EventDatabase
 import NetworkUtility.NetworkConnection
+import TimeUtility.TimeFormat
 import android.content.Context
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
@@ -12,16 +13,16 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.SearchView
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Filters.FilteringListener {
 
     lateinit var optionsMenu:Menu
     lateinit var unfilteredEvents:MutableList<Event>
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         unfilteredEvents = mutableListOf()
         events = mutableListOf()
@@ -68,11 +70,6 @@ class MainActivity : AppCompatActivity() {
         loadEventsFromJson() // loading dummy data
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        Toast.makeText(this, "onPrepareOptionsMenu", Toast.LENGTH_SHORT).show()
-        return super.onPrepareOptionsMenu(menu)
-    }
-
     fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -83,30 +80,23 @@ class MainActivity : AppCompatActivity() {
         // assigns a hint into SearchView query text
         searchView?.queryHint = getString(R.string.search_hint)
 
-        // TODO 9: Para detectar que se presiona el botón de back del toolbar
-        searchView?.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener {
-            override fun onFocusChange(view: View, queryTextFocused: Boolean) {
-                if (!queryTextFocused) {
-                    searchView?.setIconified(true)
-                }
+        searchView?.setOnQueryTextFocusChangeListener { _, queryTextFocused ->
+            if (!queryTextFocused) {
+                searchView?.isIconified = true
             }
-        })
+        }
 
-        // TODO 8: Actualizar lista con todos los elementos al cerrar el SearchView
-        searchView?.setOnCloseListener(object : SearchView.OnCloseListener {
-            override fun onClose(): Boolean {
-                events.clear()
-                events.addAll(unfilteredEvents)
-                eventAdapter.notifyDataSetChanged()
-                searchView?.onActionViewCollapsed()
-                supportInvalidateOptionsMenu()
-                return true
-            }
-        })
+        searchView?.setOnCloseListener {
+            events.clear()
+            events.addAll(unfilteredEvents)
+            eventAdapter.notifyDataSetChanged()
+            searchView?.onActionViewCollapsed()
+            supportInvalidateOptionsMenu()
+            true
+        }
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                Toast.makeText(this@MainActivity, query, Toast.LENGTH_SHORT).show()
                 val newEvents:MutableList<Event> = mutableListOf()
                 newEvents.addAll(doMySearch(query).toMutableList())
                 events.clear()
@@ -145,6 +135,7 @@ class MainActivity : AppCompatActivity() {
     fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
+
     // function that loads the events from the JSON file
     fun loadEventsFromJson() {
         if (NetworkConnection.isNetworkConnected(this)) {
@@ -216,11 +207,10 @@ class MainActivity : AppCompatActivity() {
                     jsonObject.getString("reviewStatus"),
                     jsonObject.getString("reviewComments"),
                     jsonObject.getInt("applicantId")))
-
             events.add(list.last())
             x++
         }
-        Toast.makeText(this@MainActivity, "All events loaded", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this@MainActivity, "All events loaded", Toast.LENGTH_SHORT).show()
         events.sortBy {it.startDateTime}
         unfilteredEvents.addAll(events)
         eventAdapter.notifyDataSetChanged()
@@ -260,4 +250,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun filter(categoryId: Int?, year:Int?, month:Int?, day:Int?) {
+        events.clear()
+        if (categoryId == null){
+            events.addAll(unfilteredEvents)
+        }
+        else {
+            unfilteredEvents.map {
+                if (it.categoryId == categoryId) {
+                    events.add(it)
+                }
+            }
+        }
+        if (year != null) {
+            val yearFilteredEvents = events.filter { TimeFormat.getNumericalYear(it.startDateTime) == year }
+            events.clear()
+            events.addAll(yearFilteredEvents)
+            if (month != null) {
+                val monthFilteredEvents = events.filter { TimeFormat.getNumericalMonth(it.startDateTime) == month }
+                events.clear()
+                events.addAll(monthFilteredEvents)
+                if (day != null) {
+                    val dayFilteredEvents = events.filter { TimeFormat.getNumericalDay(it.startDateTime) == day }
+                    events.clear()
+                    events.addAll(dayFilteredEvents)
+                }
+            }
+        }
+
+        eventAdapter.notifyDataSetChanged()
+        drawer_layout.closeDrawer(Gravity.START)
+    }
+
+    override fun reset() {
+        events.clear()
+        events.addAll(unfilteredEvents)
+        eventAdapter.notifyDataSetChanged()
+        drawer_layout.closeDrawer(Gravity.START)
+    }
+
 }

@@ -14,7 +14,25 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="filter_header">
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="filter_spinner">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="filter_apply_btn">
+        <item name="android:textSize">17sp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
 
 </resources>
