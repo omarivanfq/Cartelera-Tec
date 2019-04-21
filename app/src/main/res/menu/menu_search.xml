@@ -6,6 +6,12 @@
 
     <!-- showAsAction -> ifRoom|collapseActionView which means the search view widget
     will be added to the action bar if there is enough room and it will be collapsed into a button -->
+    <item android:id="@+id/item_filter"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="@string/filter_view"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
+
     <item android:id="@+id/item_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search_view"

@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.SearchView
 import android.view.Gravity
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -72,6 +73,14 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
 
     fun doMySearch(query:String) = unfilteredEvents.filter { event -> event.name.contains(query,true) }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null && item.itemId == R.id.item_filter) {
+            drawer_layout.openDrawer(Gravity.START)
+            return false
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         optionsMenu = menu
         menuInflater.inflate(R.menu.menu_search, menu)
@@ -113,7 +122,6 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
         override fun getItem(position: Int): Fragment {
             val eventsTab = EventsTab()
             eventsTab.adapter = eventAdapter
