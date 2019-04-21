@@ -17,6 +17,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -26,18 +27,19 @@ import org.json.JSONArray
 class MainActivity : AppCompatActivity(), Filters.FilteringListener {
 
     lateinit var optionsMenu:Menu
-    lateinit var unfilteredEvents:MutableList<Event>
+    private lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
+    private var filterView: Button? = null
+
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-    lateinit var dataJson:String
-    lateinit var eventAdapter:EventAdapter
+    private lateinit var eventAdapter:EventAdapter
     lateinit var favoritesAdapter:EventAdapter
 
     lateinit var events:MutableList<Event>
-    lateinit var favoriteEvents:MutableList<Event>
+    private lateinit var favoriteEvents:MutableList<Event>
 
-    lateinit var listIds:List<Int>
-    lateinit var instanceDatabase: EventDatabase
+    private lateinit var listIds:List<Int>
+    private lateinit var instanceDatabase: EventDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +78,7 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null && item.itemId == R.id.item_filter) {
             drawer_layout.openDrawer(Gravity.START)
-            return false
+            return true
         }
         return super.onOptionsItemSelected(item)
     }
@@ -100,7 +102,7 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
             events.addAll(unfilteredEvents)
             eventAdapter.notifyDataSetChanged()
             searchView?.onActionViewCollapsed()
-            supportInvalidateOptionsMenu()
+            //supportInvalidateOptionsMenu()
             true
         }
 
@@ -140,23 +142,23 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         }
 
     }
-    fun loadJsonFromAsset(fileName: String, context: Context): String =
+    private fun loadJsonFromAsset(fileName: String, context: Context): String =
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
 
     // function that loads the events from the JSON file
-    fun loadEventsFromJson() {
+    private fun loadEventsFromJson() {
         if (NetworkConnection.isNetworkConnected(this)) {
-            val jsonString: String = loadJsonFromAsset("events.json", this)
+            val jsonString: String = loadJsonFromAsset(fileName = "events.json", context = this)
             handleJson(jsonString)
         }
     }
     // function that loads the events from the web service
-    fun loadEvents() {
+    private fun loadEvents() {
         if (NetworkConnection.isNetworkConnected(this)){
             doAsync {
                 val url = NetworkConnection.buildEventsUrl()
-                 dataJson = NetworkConnection.getResponseFromHttpUrl(url)
+                val dataJson = NetworkConnection.getResponseFromHttpUrl(url)
                 uiThread {
                     handleJson(dataJson)
                 }
