@@ -1,10 +1,13 @@
 package com.itesm.cartelera_tec_mty
 
+import android.Manifest
 import android.app.FragmentManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,6 +90,11 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            println("@@@")
+            mMap?.setMyLocationEnabled(true)
+        }
         var events = (activity as MainActivity).events
         val tec = CameraPosition.Builder()
                 .target(LatLng(25.651115, -100.289370))
@@ -95,7 +103,6 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
             mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
         }
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(tec))
-        println(mMap?.cameraPosition)
     }
 
     override fun onDataPassed(events: MutableList<Event>) {
