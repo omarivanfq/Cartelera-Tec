@@ -2,6 +2,10 @@ package com.itesm.cartelera_tec_mty
 
 import Database.EventDatabase
 import TimeUtility.TimeFormat
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -10,6 +14,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_event_detail.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.io.File
+import java.io.FileOutputStream
 
 class EventDetail : AppCompatActivity() {
 
@@ -22,7 +28,32 @@ class EventDetail : AppCompatActivity() {
         setContentView(R.layout.activity_event_detail)
         event = intent.extras.getParcelable(EventsTab.EXTRA_EVENT)
         bind(event)
+        //share on button click
+        shareBtn.setOnClickListener{
+            //image
+            val myDrawable = imageview_photo.drawable
+            val bitmap = (myDrawable as BitmapDrawable).bitmap
+            //get text and image
+            val s = textview_title.text.toString()
+            val d = textview_description.text.toString()
+            val file = File(externalCacheDir, "event_1_pic.jpg")
+            val fOut = FileOutputStream(file)
+            //Intent to share the text and image
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fOut)
+            fOut.flush()
+            fOut.close()
+            file.setReadable(true, false)
+            val shareIntent = Intent()
+            shareIntent.action = Intent.ACTION_SEND
+            shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            shareIntent.type = "text/plain"
+            shareIntent.type = "image/png"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, d)
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, s)
+            //shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+            startActivity(Intent.createChooser(shareIntent, "Compartir via"))
 
+        }
         fab_favorite.setOnClickListener {
             if (favorite)
                 deleteFromFavoriteDB()
