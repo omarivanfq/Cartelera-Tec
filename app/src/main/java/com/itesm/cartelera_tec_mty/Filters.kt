@@ -33,9 +33,9 @@ class Filters : Fragment() {
     private var categories:ArrayList<Category> = arrayListOf()
     lateinit var filteringListener:FilteringListener
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_filters, container, false)
+        val view = inflater.inflate(R.layout.fragment_filters, container, false)
         setYearsSpinner(view)
         setMonthsSpinner(view)
         setDaysSpinner(view)

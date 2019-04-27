@@ -18,6 +18,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import com.google.android.gms.maps.GoogleMap
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -30,11 +31,12 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
     private lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
     private var filterView: Button? = null
-
+    var dataPasser: OnDataPassedListener? = null
+    var mapFragment:MapTab? = null
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private lateinit var eventAdapter:EventAdapter
     lateinit var favoritesAdapter:EventAdapter
-
+    lateinit var mMap: GoogleMap
     lateinit var events:MutableList<Event>
     private lateinit var favoriteEvents:MutableList<Event>
 
@@ -129,11 +131,13 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
             eventsTab.adapter = eventAdapter
             val favoritesTab = FavoritesTab()
             favoritesTab.adapter = favoritesAdapter
+            val mapTab = MapTab()
+            mapFragment = mapTab
             return when (position) {
                 0 -> eventsTab
                 1 -> favoritesTab
              //   2 -> SearchTab()
-                2 -> MapTab()
+                2 -> mapTab
                 else -> SearchTab()
             }
         }
@@ -290,6 +294,7 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         }
 
         eventAdapter.notifyDataSetChanged()
+        mapFragment?.onDataPassed(events)
         drawer_layout.closeDrawer(Gravity.START)
     }
 
@@ -297,7 +302,11 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         events.clear()
         events.addAll(unfilteredEvents)
         eventAdapter.notifyDataSetChanged()
+        mapFragment?.onDataPassed(events)
         drawer_layout.closeDrawer(Gravity.START)
     }
 
+    interface OnDataPassedListener {
+        fun onDataPassed(events:MutableList<Event>)
+    }
 }
