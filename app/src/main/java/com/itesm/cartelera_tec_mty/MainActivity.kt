@@ -3,6 +3,7 @@ package com.itesm.cartelera_tec_mty
 import Database.EventDatabase
 import NetworkUtility.NetworkConnection
 import TimeUtility.TimeFormat
+import android.Manifest
 import android.content.Context
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.SearchView
 import android.view.Gravity
