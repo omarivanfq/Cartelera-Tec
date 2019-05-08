@@ -21,20 +21,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.Marker
-import kotlinx.android.synthetic.main.map_tab.*
-import org.jetbrains.anko.doAsync
-/*
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
-*/
 
 
 
@@ -54,19 +40,6 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
 
 
     private var mMap:GoogleMap? = null
-/*
-    private val TAG = "MainActivity"
-    private var mGoogleApiClient: GoogleApiClient? = null
-    private val mLocation: Location? = null
-    private var mLocationManager: LocationManager? = null
-    private val mLocationRequest: LocationRequest? = null
-    private val listener: com.google.android.gms.location.LocationListener? = null
-    private val UPDATE_INTERVAL = (2 * 1000).toLong()  /* 10 secs */
-    private val FASTEST_INTERVAL: Long = 20000 /* 20 sec */
-
-    private val locationManager: LocationManager? = null
-    private val latLng: LatLng? = null
-    private val isPermission: Boolean = false*/
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,21 +49,6 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
         val mapFragment = childFragmentManager.
                 findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-/*
-        if (requestSinglePermission()) {
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            //it was pre written
-
-            mGoogleApiClient = GoogleApiClient.Builder(this).
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-
-            mLocationManager = t
-
-            checkLocation(); //check whether location service is enable or not in your  phone
-        }*/
         return view
     }
 
