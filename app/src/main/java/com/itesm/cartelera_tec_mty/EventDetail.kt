@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ import java.io.FileOutputStream
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
 
 
 class EventDetail : AppCompatActivity(), OnMapReadyCallback {
@@ -66,6 +68,23 @@ class EventDetail : AppCompatActivity(), OnMapReadyCallback {
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, s)
             //shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
             startActivity(Intent.createChooser(shareIntent, "Compartir via"))
+
+            //calendario
+            calendarBtn.setOnClickListener{
+                val s = textview_title.text.toString()
+                val d = textview_description.text.toString()
+                val l = textview_location.text.toString()
+                val intent = Intent(Intent.ACTION_INSERT)
+                intent.setType("vnd.android.cursor.item/event");
+                intent.putExtra(CalendarContract.Events.TITLE, s);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, TimeFormat.getDate(event.startDateTime));
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, TimeFormat.getDate(event.endDateTime));
+                intent.putExtra(CalendarContract.Events.ALL_DAY, true);// periodicity
+                intent.putExtra(CalendarContract.Events.DESCRIPTION, d);
+                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, l);
+                startActivity(intent);
+            }
+
 
         }
         fab_favorite.setOnClickListener {
