@@ -191,6 +191,13 @@
                 android:layout_height="wrap_content"
                 android:text="Compartir" />
 
+            <Button
+                android:id="@+id/calendarBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Agregar a Calendario" />
+
+
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
