@@ -29,14 +29,14 @@ import org.json.JSONArray
 
 class MainActivity : AppCompatActivity(), Filters.FilteringListener {
 
-    lateinit var optionsMenu:Menu
+    var optionsMenu:Menu? = null
     private lateinit var unfilteredEvents:MutableList<Event>
     private var searchView: SearchView? = null
     private var filterView: Button? = null
     var dataPasser: OnDataPassedListener? = null
     var mapFragment:MapTab? = null
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-    private lateinit var eventAdapter:EventAdapter
+    lateinit var eventAdapter:EventAdapter
     lateinit var favoritesAdapter:EventAdapter
     lateinit var mMap: GoogleMap
     lateinit var events:MutableList<Event>
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                optionsMenu.findItem(R.id.item_search).isVisible = position == 0
+                optionsMenu?.findItem(R.id.item_search)?.isVisible = position == 0
             }
         })
 

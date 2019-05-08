@@ -17,11 +17,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.Marker
-
+import com.google.android.gms.maps.model.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener,
@@ -72,8 +70,20 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
         val tec = CameraPosition.Builder()
                 .target(LatLng(25.651115, -100.289370))
                 .bearing(48f).tilt(0f).zoom(16.9f).build()
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS-HH:mm")
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy")
         for (event in events) {
-            mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
+            val eventDate = inputFormat.parse(event.startDateTime)
+            val formattedDate = outputFormat.format(eventDate)
+            if(formattedDate == outputFormat.format(Date())) {
+                println(Date())
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)))
+            } else {
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name))
+            }
         }
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(tec))
         mMap?.setOnMarkerClickListener(this)
@@ -81,11 +91,21 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
 
     override fun onDataPassed(events: MutableList<Event>) {
 
-        //val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        //mapFragment?.getMapAsync(this)
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS-HH:mm")
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy")
         mMap?.clear()
         for (event in events) {
-            mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
+            val eventDate = inputFormat.parse(event.startDateTime)
+            val formattedDate = outputFormat.format(eventDate)
+            if(formattedDate == outputFormat.format(Date())) {
+                println(Date())
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)))
+            } else {
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name))
+            }
         }
     }
 }
