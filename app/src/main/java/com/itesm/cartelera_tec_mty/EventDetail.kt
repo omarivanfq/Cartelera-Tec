@@ -43,7 +43,6 @@ class EventDetail : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_event_detail)
         event = intent.extras.getParcelable(EventsTab.EXTRA_EVENT)
         bind(event)
-
         //share on button click
         shareBtn.setOnClickListener{
             val shareIntent = Intent()
@@ -57,17 +56,29 @@ class EventDetail : AppCompatActivity(), OnMapReadyCallback {
 
         //calendario
         calendarBtn.setOnClickListener{
-            val title = textview_title.text.toString()
-            val description = textview_description.text.toString()
-            val location = textview_location.text.toString()
+
+            val calStart = Calendar.getInstance()
+            calStart.set(Calendar.DAY_OF_MONTH, TimeFormat.getNumericalDay(event.startDateTime))
+            calStart.set(Calendar.MONTH, TimeFormat.getNumericalMonth(event.startDateTime) - 1)
+            calStart.set(Calendar.YEAR, TimeFormat.getNumericalYear(event.startDateTime))
+            calStart.set(Calendar.HOUR_OF_DAY, 10)
+            calStart.set(Calendar.MINUTE, 0)
+
+            val calEnd = Calendar.getInstance()
+            calEnd.set(Calendar.DAY_OF_MONTH, TimeFormat.getNumericalDay(event.endDateTime))
+            calEnd.set(Calendar.MONTH, TimeFormat.getNumericalMonth(event.endDateTime) - 1)
+            calEnd.set(Calendar.YEAR, TimeFormat.getNumericalYear(event.endDateTime))
+            calEnd.set(Calendar.HOUR_OF_DAY, 13)
+            calEnd.set(Calendar.MINUTE, 0)
+
             val intent = Intent(Intent.ACTION_INSERT)
             intent.type = "vnd.android.cursor.item/event"
-            intent.putExtra(CalendarContract.Events.TITLE, title)
-            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, TimeFormat.getDate(event.startDateTime))
-            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, TimeFormat.getDate(event.endDateTime))
-            intent.putExtra(CalendarContract.Events.ALL_DAY, true)// periodicity
-            intent.putExtra(CalendarContract.Events.DESCRIPTION, description)
-            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, location)
+            intent.putExtra(CalendarContract.Events.TITLE, event.name)
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calStart.timeInMillis)
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calEnd.timeInMillis)
+            intent.putExtra(CalendarContract.Events.ALL_DAY, true)
+            intent.putExtra(CalendarContract.Events.DESCRIPTION, event.description)
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
             startActivity(intent)
         }
 
