@@ -13,12 +13,12 @@ class EventsTab : Fragment() {
 
     private var searchView: SearchView? = null
     lateinit var eventsListView:ListView
-    lateinit var adapter:EventAdapter
+    var adapter:EventAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.events_tab, container, false)
         eventsListView = rootView.findViewById(R.id.events_list)
-        eventsListView.adapter = adapter
+        eventsListView.adapter = (activity as MainActivity).eventAdapter
         return rootView
     }
 

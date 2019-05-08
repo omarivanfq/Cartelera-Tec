@@ -3,6 +3,7 @@ package com.itesm.cartelera_tec_mty
 import android.Manifest
 import android.app.FragmentManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -16,15 +17,28 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.CameraPosition
-import kotlinx.android.synthetic.main.map_tab.*
-import org.jetbrains.anko.doAsync
+import com.google.android.gms.maps.model.*
+import java.text.SimpleDateFormat
+import java.util.*
 
-class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener {
+
+class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener,
+        GoogleMap.OnMarkerClickListener {
+    override fun onMarkerClick(p0: Marker?):Boolean {
+        var events = (activity as MainActivity).events
+        for (event in events) {
+            if(event.name == p0?.title) {
+                val detailIntent = Intent(context, EventDetail::class.java)
+                detailIntent.putExtra(EventsTab.EXTRA_EVENT, event)
+                ContextCompat.startActivity(context, detailIntent, null)
+            }
+        }
+        return false
+    }
+
 
     private var mMap:GoogleMap? = null
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -33,7 +47,6 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
         val mapFragment = childFragmentManager.
                 findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-
         return view
     }
 
@@ -57,17 +70,42 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
         val tec = CameraPosition.Builder()
                 .target(LatLng(25.651115, -100.289370))
                 .bearing(48f).tilt(0f).zoom(16.9f).build()
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS-HH:mm")
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy")
         for (event in events) {
-            mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
+            val eventDate = inputFormat.parse(event.startDateTime)
+            val formattedDate = outputFormat.format(eventDate)
+            if(formattedDate == outputFormat.format(Date())) {
+                println(Date())
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)))
+            } else {
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name))
+            }
         }
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(tec))
+        mMap?.setOnMarkerClickListener(this)
     }
 
     override fun onDataPassed(events: MutableList<Event>) {
 
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS-HH:mm")
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy")
         mMap?.clear()
         for (event in events) {
-            mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
+            val eventDate = inputFormat.parse(event.startDateTime)
+            val formattedDate = outputFormat.format(eventDate)
+            if(formattedDate == outputFormat.format(Date())) {
+                println(Date())
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)))
+            } else {
+                mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude))
+                        .title(event.name))
+            }
         }
     }
 }

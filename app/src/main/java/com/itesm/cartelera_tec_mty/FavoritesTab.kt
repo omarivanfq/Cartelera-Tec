@@ -13,14 +13,14 @@ import org.jetbrains.anko.uiThread
 
 class FavoritesTab : Fragment() {
 
-    lateinit var adapter:EventAdapter
+    var adapter:EventAdapter? = null
     lateinit var listView:ListView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.favorites_tab, container, false)
         listView = rootView.findViewById(R.id.favorites_list)
-        listView.adapter = adapter
+        listView.adapter = (activity as MainActivity).favoritesAdapter
         return rootView
     }
 

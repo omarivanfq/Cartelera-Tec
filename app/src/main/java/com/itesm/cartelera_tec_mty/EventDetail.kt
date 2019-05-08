@@ -2,32 +2,46 @@ package com.itesm.cartelera_tec_mty
 
 import Database.EventDatabase
 import TimeUtility.TimeFormat
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import com.google.android.gms.maps.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_event_detail.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
 import java.io.FileOutputStream
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.MarkerOptions
 
-class EventDetail : AppCompatActivity() {
+
+class EventDetail : AppCompatActivity(), OnMapReadyCallback {
 
     lateinit var event:Event
     lateinit var instanceDatabase: EventDatabase
     var favorite:Boolean = false
+    private var mapView:MapView? = null
+    private var mMap:GoogleMap? = null
+    private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_detail)
         event = intent.extras.getParcelable(EventsTab.EXTRA_EVENT)
         bind(event)
+
         //share on button click
         shareBtn.setOnClickListener{
             //image
@@ -79,6 +93,16 @@ class EventDetail : AppCompatActivity() {
                 }
             }
         }
+
+        var mapViewBundle:Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
+
+        // MapView
+        mapView = findViewById(R.id.map_view)
+        mapView?.onCreate(mapViewBundle)
+        mapView?.getMapAsync(this)
     }
 
     // function that removes the current event from the database and updates the fab button
@@ -119,4 +143,53 @@ class EventDetail : AppCompatActivity() {
         textview_cost.text = "Costo: $" + event.cost
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        val tec = CameraPosition.Builder()
+                .target(LatLng(25.651115, -100.289370))
+                .bearing(48f).tilt(0f).zoom(16.6f).build()
+        mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
+        mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(tec))
+    }
+    public override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle)
+        }
+
+        mapView?.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+    }
+
+    override fun onPause() {
+        mapView?.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView?.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
+    }
 }
