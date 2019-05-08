@@ -25,7 +25,7 @@ import java.util.*
 class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener,
         GoogleMap.OnMarkerClickListener {
     override fun onMarkerClick(p0: Marker?):Boolean {
-        var events = (activity as MainActivity).events
+        val events = (activity as MainActivity).events
         for (event in events) {
             if(event.name == p0?.title) {
                 val detailIntent = Intent(context, EventDetail::class.java)
@@ -66,7 +66,7 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
             println("@@@")
             mMap?.setMyLocationEnabled(true)
         }
-        var events = (activity as MainActivity).events
+        val events = (activity as MainActivity).events
         val tec = CameraPosition.Builder()
                 .target(LatLng(25.651115, -100.289370))
                 .bearing(48f).tilt(0f).zoom(16.9f).build()

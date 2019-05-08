@@ -144,7 +144,6 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
             return when (position) {
                 0 -> eventsTab
                 1 -> favoritesTab
-             //   2 -> SearchTab()
                 2 -> mapTab
                 else -> SearchTab()
             }
@@ -262,12 +261,6 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         eventAdapter.notifyDataSetChanged()
         updateFavoritesListData()
         favoritesAdapter.notifyDataSetChanged()
-        if (events.isEmpty()) {
-            textview_noevents.visibility = View.VISIBLE
-        }
-        else {
-            textview_noevents.visibility = View.INVISIBLE
-        }
     }
     override fun onResume() {
         super.onResume()
@@ -298,7 +291,6 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
     }
 
     override fun filter(categoryId: Int?, year:Int?, month:Int?, day:Int?) {
-
         events.clear()
         if (categoryId == null){
             events.addAll(unfilteredEvents)

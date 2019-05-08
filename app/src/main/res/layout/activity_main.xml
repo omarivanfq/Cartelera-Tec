@@ -64,15 +64,6 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         <TextView
-            android:id="@+id/textview_noevents"
-            android:textAlignment="center"
-            android:padding="10dp"
-            android:textSize="20dp"
-            android:text="@string/no_events_on_db"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"/>
-        <TextView
             android:visibility="invisible"
             android:id="@+id/textview_filtered_events"
             android:text="@string/showing_filtered_events"

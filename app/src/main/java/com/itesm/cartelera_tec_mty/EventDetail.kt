@@ -46,47 +46,31 @@ class EventDetail : AppCompatActivity(), OnMapReadyCallback {
 
         //share on button click
         shareBtn.setOnClickListener{
-            //image
-            val myDrawable = imageview_photo.drawable
-            val bitmap = (myDrawable as BitmapDrawable).bitmap
-            //get text and image
-            val s = textview_title.text.toString()
-            val d = textview_description.text.toString()
-            val file = File(externalCacheDir, "event_1_pic.jpg")
-            val fOut = FileOutputStream(file)
-            //Intent to share the text and image
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fOut)
-            fOut.flush()
-            fOut.close()
-            file.setReadable(true, false)
             val shareIntent = Intent()
             shareIntent.action = Intent.ACTION_SEND
             shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             shareIntent.type = "text/plain"
-            shareIntent.type = "image/png"
-            shareIntent.putExtra(Intent.EXTRA_TEXT, d)
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, s)
-            //shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
-            startActivity(Intent.createChooser(shareIntent, "Compartir via"))
-
-            //calendario
-            calendarBtn.setOnClickListener{
-                val s = textview_title.text.toString()
-                val d = textview_description.text.toString()
-                val l = textview_location.text.toString()
-                val intent = Intent(Intent.ACTION_INSERT)
-                intent.setType("vnd.android.cursor.item/event");
-                intent.putExtra(CalendarContract.Events.TITLE, s);
-                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, TimeFormat.getDate(event.startDateTime));
-                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, TimeFormat.getDate(event.endDateTime));
-                intent.putExtra(CalendarContract.Events.ALL_DAY, true);// periodicity
-                intent.putExtra(CalendarContract.Events.DESCRIPTION, d);
-                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, l);
-                startActivity(intent);
-            }
-
-
+            shareIntent.putExtra(Intent.EXTRA_TEXT, event.description + "\nContacto: " + event.contactEmail)
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, event.name)
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)))
         }
+
+        //calendario
+        calendarBtn.setOnClickListener{
+            val title = textview_title.text.toString()
+            val description = textview_description.text.toString()
+            val location = textview_location.text.toString()
+            val intent = Intent(Intent.ACTION_INSERT)
+            intent.type = "vnd.android.cursor.item/event"
+            intent.putExtra(CalendarContract.Events.TITLE, title)
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, TimeFormat.getDate(event.startDateTime))
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, TimeFormat.getDate(event.endDateTime))
+            intent.putExtra(CalendarContract.Events.ALL_DAY, true)// periodicity
+            intent.putExtra(CalendarContract.Events.DESCRIPTION, description)
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, location)
+            startActivity(intent)
+        }
+
         fab_favorite.setOnClickListener {
             if (favorite)
                 deleteFromFavoriteDB()

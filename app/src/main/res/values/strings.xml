@@ -19,4 +19,5 @@
     <string name="filters_remove">Eliminar Filtros</string>
     <string name="no_connection">No hay conexión a internet</string>
     <string name="showing_filtered_events">Se muestran eventos filtrados</string>
+    <string name="share_via">Compartir vía</string>
 </resources>
