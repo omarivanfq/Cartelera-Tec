@@ -20,6 +20,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import com.google.android.gms.maps.GoogleMap
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -45,10 +46,12 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
     private lateinit var listIds:List<Int>
     private lateinit var instanceDatabase: EventDatabase
 
+    private lateinit var connectionProblemTextView:TextView
+    private lateinit var filteredEventsTextView:TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         unfilteredEvents = mutableListOf()
         events = mutableListOf()
@@ -61,6 +64,9 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         container.adapter = mSectionsPagerAdapter
+
+        connectionProblemTextView = findViewById(R.id.textview_no_connection)
+        filteredEventsTextView = findViewById(R.id.textview_filtered_events)
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -152,11 +158,35 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
             (context.assets.open(fileName) ?: throw RuntimeException("Cannot open file: $fileName"))
                     .bufferedReader().use { it.readText() }
 
+    private fun showNoConnectionView(show:Boolean) {
+        if (show) {
+            connectionProblemTextView.visibility = View.VISIBLE
+            showFilteredEventsView(false)
+        }
+        else {
+            connectionProblemTextView.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun showFilteredEventsView(show:Boolean) {
+        if (show) {
+            filteredEventsTextView.visibility = View.VISIBLE
+            showNoConnectionView(false)
+        }
+        else {
+            filteredEventsTextView.visibility = View.INVISIBLE
+        }
+    }
+
     // function that loads the events from the JSON file
     private fun loadEventsFromJson() {
         if (NetworkConnection.isNetworkConnected(this)) {
             val jsonString: String = loadJsonFromAsset(fileName = "events.json", context = this)
             handleJson(jsonString)
+            showNoConnectionView(false)
+        }
+        else {
+            showNoConnectionView(true)
         }
     }
     // function that loads the events from the web service
@@ -268,6 +298,7 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
     }
 
     override fun filter(categoryId: Int?, year:Int?, month:Int?, day:Int?) {
+
         events.clear()
         if (categoryId == null){
             events.addAll(unfilteredEvents)
@@ -298,6 +329,8 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         eventAdapter.notifyDataSetChanged()
         mapFragment?.onDataPassed(events)
         drawer_layout.closeDrawer(Gravity.START)
+        if (categoryId != null || year != null)
+            showFilteredEventsView(true)
     }
 
     override fun reset() {
@@ -306,6 +339,7 @@ class MainActivity : AppCompatActivity(), Filters.FilteringListener {
         eventAdapter.notifyDataSetChanged()
         mapFragment?.onDataPassed(events)
         drawer_layout.closeDrawer(Gravity.START)
+        showFilteredEventsView(false)
     }
 
     interface OnDataPassedListener {

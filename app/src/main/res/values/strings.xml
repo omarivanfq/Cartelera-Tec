@@ -17,4 +17,6 @@
     <string name="filters_title">Filtros</string>
     <string name="filter_view">Filtrar Resultados</string>
     <string name="filters_remove">Eliminar Filtros</string>
+    <string name="no_connection">No hay conexión a internet</string>
+    <string name="showing_filtered_events">Se muestran eventos filtrados</string>
 </resources>
