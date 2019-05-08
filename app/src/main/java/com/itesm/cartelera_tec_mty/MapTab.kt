@@ -3,6 +3,7 @@ package com.itesm.cartelera_tec_mty
 import android.Manifest
 import android.app.FragmentManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.map_tab.*
 import org.jetbrains.anko.doAsync
 /*
@@ -36,7 +38,20 @@ import com.karumi.dexter.listener.single.PermissionListener
 
 
 
-class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener {
+class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener,
+        GoogleMap.OnMarkerClickListener {
+    override fun onMarkerClick(p0: Marker?):Boolean {
+        var events = (activity as MainActivity).events
+        for (event in events) {
+            if(event.name == p0?.title) {
+                val detailIntent = Intent(context, EventDetail::class.java)
+                detailIntent.putExtra(EventsTab.EXTRA_EVENT, event)
+                ContextCompat.startActivity(context, detailIntent, null)
+            }
+        }
+        return false
+    }
+
 
     private var mMap:GoogleMap? = null
 /*
@@ -103,6 +118,7 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
             mMap?.addMarker(MarkerOptions().position(LatLng(event.latitude, event.longitude)).title(event.name))
         }
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(tec))
+        mMap?.setOnMarkerClickListener(this)
     }
 
     override fun onDataPassed(events: MutableList<Event>) {
