@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.Toast
+import org.jetbrains.annotations.NotNull
 
 
 class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPassedListener,
@@ -62,8 +65,10 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            println("@@@")
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+        } else {
             mMap?.setMyLocationEnabled(true)
         }
         val events = (activity as MainActivity).events
@@ -107,5 +112,23 @@ class MapTab : SupportMapFragment(), OnMapReadyCallback, MainActivity.OnDataPass
                         .title(event.name))
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty()
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mMap?.setMyLocationEnabled(true)
+                }
+                return
+            }
+        }
+    }
+
+    companion object {
+        const val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     }
 }
