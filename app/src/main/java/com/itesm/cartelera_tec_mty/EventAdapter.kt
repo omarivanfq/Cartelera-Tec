@@ -83,11 +83,13 @@ class EventAdapter (val context: Context, val list:MutableList<Event>):BaseAdapt
             val textviewLocation = containerView.findViewById<TextView>(R.id.textview_location)
             val textviewDate = containerView.findViewById<TextView>(R.id.textview_date)
             val textviewTime = containerView.findViewById<TextView>(R.id.textview_time)
+            val textviewCategory = containerView.findViewById<TextView>(R.id.textview_category_)
             val imageview = containerView.findViewById<ImageView>(R.id.image_event)
             textviewTitle.text = event.name //textview_nombre.text = libro.nombre
             textviewLocation.text = event.location
             textviewDate.text = TimeFormat.getDate(event.startDateTime)
             textviewTime.text = TimeFormat.getTime(event.startDateTime) + " - " + TimeFormat.getTime(event.endDateTime)
+            textviewCategory.text = event.categoryName
             Picasso.get().load(event.photo).into(imageview)
             containerView.setOnClickListener { _ ->
                 val detailIntent = Intent(context, EventDetail::class.java)
